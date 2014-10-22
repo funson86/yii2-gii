@@ -1,0 +1,21 @@
+{
+    "name": "funson86/yii2-gii",
+    "description": "Yii2 gii for chinese",
+    "type": "yii2-extension",
+    "keywords": ["yii2","extension","blog"],
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "funson86",
+            "email": "funson86@gmail.com"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "funson86\\yii2-gii\\": ""
+        }
+    }
+}
