@@ -1,12 +1,17 @@
 Yii2-gii for Chinese
 ========
+
 主要针对中文的优化
+
 CRUD
+
 1.减少翻译标签，将Create Post分开成Create和Post，翻译文件的标签大大减少
 2.针对Adminlte减少h1标签
 3.针对鉴权提供can函数，默认注释
 
+
 Model
+
 1.增加beforeSave和afterSave两个函数，默认修改create_time和update_time
 
 Installation
@@ -35,6 +40,8 @@ Usage
 Once the extension is installed, simply use it in your code by  :
 
 在main-local.php中配置：
+
+```php
 if (!YII_ENV_TEST) {
     // configuration adjustments for 'dev' environment
     $config['bootstrap'][] = 'debug';
@@ -60,5 +67,6 @@ if (!YII_ENV_TEST) {
         ],
     ];
 }
+```
 
 在gii新建模板时会多出一个选项。
