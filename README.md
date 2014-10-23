@@ -5,9 +5,9 @@ Yii2-gii for Chinese
 
 CRUD
 
-1.减少翻译标签，将Create Post分开成Create和Post，翻译文件的标签大大减少
-2.针对Adminlte减少h1标签
-3.针对鉴权提供can函数，默认注释
+1. 减少翻译标签，将Create Post分开成Create和Post，翻译文件的标签大大减少
+2. 针对Adminlte减少h1标签
+3. 针对鉴权提供can函数，默认注释
 
 
 Model
