@@ -12,7 +12,7 @@ CRUD
 
 Model
 
-1.增加beforeSave和afterSave两个函数，默认修改create_time和update_time
+1. 增加beforeSave和afterSave两个函数，默认修改create_time和update_time
 
 Installation
 ------------
