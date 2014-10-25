@@ -63,13 +63,17 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
      */
     public function actionIndex()
     {
+        //'visible' => Yii::$app->user->can('readYourAuth'),
+
 <?php if (!empty($generator->searchModelClass)): ?>
         $searchModel = new <?= isset($searchModelAlias) ? $searchModelAlias : $searchModelClass ?>();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $arrayStatus = <?= $modelClass ?>::getArrayStatus();
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'arrayStatus' => $arrayStatus,
         ]);
 <?php else: ?>
         $dataProvider = new ActiveDataProvider([
@@ -89,6 +93,8 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
      */
     public function actionView(<?= $actionParams ?>)
     {
+        //'visible' => Yii::$app->user->can('readYourAuth'),
+        
         return $this->render('view', [
             'model' => $this->findModel(<?= $actionParams ?>),
         ]);
@@ -101,7 +107,10 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
      */
     public function actionCreate()
     {
+        //'visible' => Yii::$app->user->can('createYourAuth'),
+
         $model = new <?= $modelClass ?>();
+        $model->loadDefaultValues();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', <?= $urlParams ?>]);
@@ -120,6 +129,8 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
      */
     public function actionUpdate(<?= $actionParams ?>)
     {
+        //'visible' => Yii::$app->user->can('updateYourAuth'),
+
         $model = $this->findModel(<?= $actionParams ?>);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
@@ -139,7 +150,12 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
      */
     public function actionDelete(<?= $actionParams ?>)
     {
-        $this->findModel(<?= $actionParams ?>)->delete();
+        //'visible' => Yii::$app->user->can('deleteYourAuth'),
+
+        //$this->findModel(<?= $actionParams ?>)->delete();
+        $model = $this->findModel(<?= $actionParams ?>);
+        $model->status = <?= $modelClass ?>::STATUS_DELETED;
+        $model->save();
 
         return $this->redirect(['index']);
     }
