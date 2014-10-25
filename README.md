@@ -4,10 +4,9 @@ Yii2-gii for Chinese
 主要针对中文和项目的优化
 
 
-default模板
-========
+## default模板
 
-## CRUD
+### CRUD
 
 1. 减少翻译标签，将Create Post分开成Create和Post，翻译文件的标签大大减少
 2. 针对Adminlte减少h1标签
@@ -16,36 +15,36 @@ default模板
 5. controller.php Create部分会加载数据库默认，Delete会将状态设置为STATUS_DELETE
 6. search.php增加排序，按照sort_order升序, create_time降序
 
-## Model
+### Model
 
 1. 增加beforeSave和afterSave两个函数，默认修改create_time, update_time, create_user_id, update_user_id
 2. 增加状态信息，以及$_statusLabel，并增加两个函数getArrayStatus和getStatusLabel
 
-## Usage
+### Usage
 1.在生成的视图index.php替换'status'
 
 ```php
-            [
-                'attribute' => 'status',
-                'format' => 'html',
-                'value' => function ($model) {
-                        if ($model->status === $model::STATUS_ACTIVE) {
-                            $class = 'label-success';
-                        } elseif ($model->status === $model::STATUS_INACTIVE) {
-                            $class = 'label-warning';
-                        } else {
-                            $class = 'label-danger';
-                        }
+[
+    'attribute' => 'status',
+    'format' => 'html',
+    'value' => function ($model) {
+            if ($model->status === $model::STATUS_ACTIVE) {
+                $class = 'label-success';
+            } elseif ($model->status === $model::STATUS_INACTIVE) {
+                $class = 'label-warning';
+            } else {
+                $class = 'label-danger';
+            }
 
-                        return '<span class="label ' . $class . '">' . $model->statusLabel . '</span>';
-                    },
-                'filter' => Html::activeDropDownList(
-                        $searchModel,
-                        'status',
-                        $arrayStatus,
-                        ['class' => 'form-control', 'prompt' => Yii::t('app', 'PROMPT_STATUS')]
-                    )
-            ],
+            return '<span class="label ' . $class . '">' . $model->statusLabel . '</span>';
+        },
+    'filter' => Html::activeDropDownList(
+            $searchModel,
+            'status',
+            $arrayStatus,
+            ['class' => 'form-control', 'prompt' => Yii::t('app', 'PROMPT_STATUS')]
+        )
+],
 ```
 
 2.在生成的视图_form.php头部use对应的model
@@ -54,6 +53,7 @@ default模板
 <?= $form->field($model, 'status')->textInput() ?>
 <?= $form->field($model, 'status')->dropDownList(User::getArrayStatus()) ?>
 ```
+
 
 Installation
 ------------
