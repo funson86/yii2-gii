@@ -47,11 +47,19 @@ Yii2-gii for Chinese
 ],
 ```
 
-2.在生成的视图_form.php头部use对应的model
+2.在生成的视图_form.php替换如下代码
 
 ```php
 <?= $form->field($model, 'status')->textInput() ?>
-<?= $form->field($model, 'status')->dropDownList(User::getArrayStatus()) ?>
+<?= $form->field($model, 'status')->dropDownList(\common\models\User::getArrayStatus()) ?>
+```
+
+3.在生成的视图view.php替换'status'
+```php
+[
+    'attribute' => 'status',
+    'value' => $model->statusLabel,
+],
 ```
 
 
