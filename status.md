@@ -58,34 +58,48 @@
 ],
 ```
 
-4. 在model文件中增加createUser和updateUser
+4. 在model文件中status下增加如下函数
 ```php
 /**
- * @return \yii\db\ActiveQuery
+ * @return string
  */
-public function getCreateUser()
+public function getCreateUserName()
 {
-    return $this->hasOne(User::className(), ['id' => 'create_user_id']);
+    if($this->_createUserName === null)
+    {
+        if($this->create_user_id > 0)
+            return User::findOne($this->create_user_id)->username;
+        else
+            return '-';
+    }
+    return $this->_createUserName;
 }
 
 /**
- * @return \yii\db\ActiveQuery
+ * @return string
  */
-public function getUpdateUser()
+public function getUpdateUserName()
 {
-    return $this->hasOne(User::className(), ['id' => 'update_user_id']);
+    if($this->_updateUserName === null)
+    {
+        if($this->update_user_id > 0)
+            return User::findOne($this->update_user_id)->username;
+        else
+            return '-';
+    }
+    return $this->_updateUserName;
 }
 ```
 
 5. 在view.php增加
 ```php
 [
-    'attribute'=>'create_user_id',
-    'value'=>$model->createUser->username,
+    'attribute' => 'create_user_id',
+    'value' => $model->createUserName,
 ],
 [
-    'attribute'=>'create_user_id',
-    'value'=>$model->updateUser->username,
+    'attribute' => 'create_user_id',
+    'value' => $model->updateUserName,
 ],
 ```
 
