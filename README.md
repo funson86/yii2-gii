@@ -105,12 +105,14 @@ if (!YII_ENV_TEST) {
                 'class' => 'yii\gii\generators\crud\Generator', //class generator
                 'templates' => [ //setting for out templates
                     'funson86' => '@vendor/funson86/yii2-gii/crud/default', //name template => path to template
+                    'funson86-status' => '@vendor/funson86/yii2-gii/crud/status', //name template => path to template
                 ]
             ],
             'model' => [ //name generator
                 'class' => 'yii\gii\generators\model\Generator', //class generator
                 'templates' => [ //setting for out templates
                     'funson86' => '@vendor/funson86/yii2-gii/model/default', //name template => path to template
+                    'funson86-status' => '@vendor/funson86/yii2-gii/model/status', //name template => path to template
                 ]
             ],
         ],

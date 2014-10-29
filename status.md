@@ -1,6 +1,5 @@
-
-
-## default模板
+Status模板
+==========
 
 ### CRUD
 
@@ -38,71 +37,36 @@
             $searchModel,
             'status',
             $arrayStatus,
-            ['class' => 'form-control', 'prompt' => Yii::t('app', 'PROMPT_STATUS')]
+            ['class' => 'form-control', 'prompt' => Yii::t('app', 'Please Select')]
         )
 ],
 ```
 
-2. 在生成的视图_form.php替换如下代码
+2. 在生成的视图_form.php替换如下代码，注意修改User为对应Model类
 
 ```php
 <?= $form->field($model, 'status')->textInput() ?>
 <?= $form->field($model, 'status')->dropDownList(\common\models\User::getArrayStatus()) ?>
 ```
 
-3. 在生成的视图view.php替换'status'
+3. 在生成的视图view.php替换'status', 'create_user_id', 'update_user_id'
 ```php
 [
     'attribute' => 'status',
     'value' => $model->statusLabel,
 ],
-```
 
-4. 在model文件中status下增加如下函数
-```php
-/**
- * @return string
- */
-public function getCreateUserName()
-{
-    if($this->_createUserName === null)
-    {
-        if($this->create_user_id > 0)
-            return User::findOne($this->create_user_id)->username;
-        else
-            return '-';
-    }
-    return $this->_createUserName;
-}
-
-/**
- * @return string
- */
-public function getUpdateUserName()
-{
-    if($this->_updateUserName === null)
-    {
-        if($this->update_user_id > 0)
-            return User::findOne($this->update_user_id)->username;
-        else
-            return '-';
-    }
-    return $this->_updateUserName;
-}
-```
-
-5. 在view.php增加
-```php
 [
     'attribute' => 'create_user_id',
     'value' => $model->createUserName,
 ],
 [
-    'attribute' => 'create_user_id',
+    'attribute' => 'update_user_id',
     'value' => $model->updateUserName,
 ],
 ```
 
+4.添加对应的翻译语言到message/zh-CN/app.php
 
 Usage
 -----
