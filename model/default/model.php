@@ -39,6 +39,8 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
     const STATUS_ACTIVE = 1;
     const STATUS_DELETED = -1;
     private $_statusLabel;
+    private $_createUserName;
+    private $_updateUserName;
 
     /**
      * @inheritdoc
@@ -146,6 +148,36 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
             $this->_statusLabel = $statuses[$this->status];
         }
         return $this->_statusLabel;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCreateUserName()
+    {
+        if($this->_createUserName === null)
+        {
+            if($this->create_user_id > 0)
+                return User::findOne($this->create_user_id)->username;
+            else
+                return '-';
+        }
+        return $this->_createUserName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUpdateUserName()
+    {
+        if($this->_updateUserName === null)
+        {
+            if($this->update_user_id > 0)
+                return User::findOne($this->update_user_id)->username;
+            else
+                return '-';
+        }
+        return $this->_updateUserName;
     }
 
 
