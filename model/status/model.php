@@ -18,6 +18,8 @@ echo "<?php\n";
 namespace <?= $generator->ns ?>;
 
 use Yii;
+use yii\behaviors\BlameableBehavior;
+use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
 
 /**
@@ -48,6 +50,27 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
     public static function tableName()
     {
         return '<?= $generator->generateTableName($tableName) ?>';
+    }
+
+    /**
+     * create_time, update_time to now()
+     * crate_user_id, update_user_id to current login user id
+     */
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::className(),
+                'createdAtAttribute' => 'create_time',
+                'updatedAtAttribute' => 'update_time',
+                'value' => new Expression('NOW()'),
+            ],
+            [
+                'class' => BlameableBehavior::className(),
+                'createdByAttribute' => 'create_user_id',
+                'updatedByAttribute' => 'update_user_id',
+            ],
+        ];
     }
 <?php if ($generator->db !== 'db'): ?>
 
@@ -98,18 +121,7 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
     {
         if(parent::beforeSave($insert))
         {
-            if($this->isNewRecord)
-            {
-                $this->create_time = new Expression('NOW()');
-                $this->update_time = $this->create_time;
-                $this->create_user_id = Yii::$app->getUser()->id;
-            }
-            else
-            {
-                $this->update_time = new Expression('NOW()');
-                $this->update_user_id = Yii::$app->getUser()->id;
-            }
-            return true;
+            // add your code here
         }
         else
             return false;
