@@ -117,15 +117,16 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
      * Before save.
      * create_time update_time
      */
-    public function beforeSave($insert)
+    /*public function beforeSave($insert)
     {
         if(parent::beforeSave($insert))
         {
             // add your code here
+            return true;
         }
         else
             return false;
-    }
+    }*/
 
     /**
      * After save.
