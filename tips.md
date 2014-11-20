@@ -39,6 +39,10 @@ use backend\models\Standard;
 ```
 在view文件view.php中
 ```
+            [
+                'attribute' => 'parent_id',
+                'value' => $model->parent_id ? $model->parent->title : Yii::t('blog', 'Root Catalog'),
+            ],
             'role',
             [
                 'attribute' => 'status',
