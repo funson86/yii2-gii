@@ -19,6 +19,7 @@ namespace <?= $generator->ns ?>;
 
 use Yii;
 use yii\behaviors\TimestampBehavior;
+use yii\behaviors\BlameableBehavior;
 use yii\db\Expression;
 
 /**
@@ -56,12 +57,8 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
     public function behaviors()
     {
         return [
-            [
-                'class' => TimestampBehavior::className(),
-                'createdAtAttribute' => 'create_time',
-                'updatedAtAttribute' => 'update_time',
-                'value' => new Expression('NOW()'),
-            ],
+            'class' => TimestampBehavior::className(),
+            //'class' => BlameableBehavior::className(),
         ];
     }
 <?php if ($generator->db !== 'db'): ?>

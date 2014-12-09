@@ -13,11 +13,12 @@ Yii2-gii for Chinese
 3. 针对鉴权提供can函数，默认注释
 4. controller.php增加对status的支持
 5. controller.php Create部分会加载数据库默认，Delete会将状态设置为STATUS_DELETE
-6. search.php增加排序，按照sort_order升序, create_time降序
+6. search.php增加排序，按照sort_order升序, create_at降序
+
 
 ### Model
 
-1. 增加beforeSave和afterSave两个函数，默认修改create_time, update_time, create_user_id, update_user_id
+1. 增加beforeSave和afterSave两个函数，默认为注释掉的
 2. 增加状态信息，以及$_statusLabel，并增加两个函数getArrayStatus和getStatusLabel
 
 ### Usage
@@ -60,6 +61,8 @@ Yii2-gii for Chinese
     'attribute' => 'status',
     'value' => $model->statusLabel,
 ],
+'created_at:datetime',
+'updated_at:datetime',
 ```
 
 
@@ -71,13 +74,13 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
-php composer.phar require --prefer-dist funson86/yii2-gii "*"
+php composer.phar require --prefer-dist funson86/yii2-gii "dev-master"
 ```
 
 or add
 
 ```
-"funson86/yii2-gii": "*"
+"funson86/yii2-gii": "dev-master"
 ```
 
 to the require section of your `composer.json` file.
@@ -121,3 +124,14 @@ if (!YII_ENV_TEST) {
 ```
 
 在gii新建模板时会多出一个选项。
+
+如果要统一输出显示的日期时间格式，修改config/main.php
+```php
+        'formatter' => [
+            'dateFormat' => 'yyyy-MM-dd',
+            'datetimeFormat' => 'yyyy-MM-dd HH:mm:ss',
+            'decimalSeparator' => ',',
+            'thousandSeparator' => ' ',
+            'currencyCode' => 'EUR',
+        ],
+```

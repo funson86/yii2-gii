@@ -68,7 +68,7 @@ class <?= $searchModelClass ?> extends <?= isset($modelAlias) ? $modelAlias : $m
         if(Yii::$app->user->identity->company_id > 1)
             $query->where(['company_id' => Yii::$app->user->identity->company_id]);
         
-        $query->orderBy(['sort_order' => SORT_ASC, 'create_time' => SORT_DESC]);
+        $query->orderBy(['sort_order' => SORT_ASC, 'created_at' => SORT_DESC]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

@@ -63,7 +63,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
      */
     public function actionIndex()
     {
-        //'visible' => Yii::$app->user->can('readYourAuth'),
+        //if(!Yii::$app->user->can('readYourAuth')) exit('No Auth');
 
 <?php if (!empty($generator->searchModelClass)): ?>
         $searchModel = new <?= isset($searchModelAlias) ? $searchModelAlias : $searchModelClass ?>();
@@ -93,7 +93,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
      */
     public function actionView(<?= $actionParams ?>)
     {
-        //'visible' => Yii::$app->user->can('readYourAuth'),
+        //if(!Yii::$app->user->can('readYourAuth')) exit('No Auth');
         
         return $this->render('view', [
             'model' => $this->findModel(<?= $actionParams ?>),
@@ -107,7 +107,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
      */
     public function actionCreate()
     {
-        //'visible' => Yii::$app->user->can('createYourAuth'),
+        //if(!Yii::$app->user->can('createYourAuth')) exit('No Auth');
 
         $model = new <?= $modelClass ?>();
         $model->loadDefaultValues();
@@ -129,7 +129,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
      */
     public function actionUpdate(<?= $actionParams ?>)
     {
-        //'visible' => Yii::$app->user->can('updateYourAuth'),
+        //if(!Yii::$app->user->can('updateYourAuth')) exit('No Auth');
 
         $model = $this->findModel(<?= $actionParams ?>);
 
@@ -150,7 +150,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
      */
     public function actionDelete(<?= $actionParams ?>)
     {
-        //'visible' => Yii::$app->user->can('deleteYourAuth'),
+        //if(!Yii::$app->user->can('deleteYourAuth')) exit('No Auth');
 
         //$this->findModel(<?= $actionParams ?>)->delete();
         $model = $this->findModel(<?= $actionParams ?>);
