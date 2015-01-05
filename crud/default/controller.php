@@ -78,12 +78,10 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 <?php if (!empty($generator->searchModelClass)): ?>
         $searchModel = new <?= isset($searchModelAlias) ? $searchModelAlias : $searchModelClass ?>();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $arrayStatus = <?= $modelClass ?>::getArrayStatus();
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'arrayStatus' => $arrayStatus,
         ]);
 <?php else: ?>
         $dataProvider = new ActiveDataProvider([
@@ -162,10 +160,10 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
     {
         //if(!Yii::$app->user->can('deleteYourAuth')) throw new HttpException(401, 'No Auth');
 
-        //$this->findModel(<?= $actionParams ?>)->delete();
-        $model = $this->findModel(<?= $actionParams ?>);
-        $model->status = <?= $modelClass ?>::STATUS_DELETED;
-        $model->save();
+        $this->findModel(<?= $actionParams ?>)->delete();
+        /*$model = $this->findModel(<?= $actionParams ?>);
+        $model->status = Status::STATUS_DELETED;
+        $model->save();*/
 
         return $this->redirect(['index']);
     }
