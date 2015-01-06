@@ -53,8 +53,8 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
     public function behaviors()
     {
         return [
-            'class' => TimestampBehavior::className(),
-            //'class' => BlameableBehavior::className(),
+            TimestampBehavior::className(),
+            // BlameableBehavior::className(),
         ];
     }
 <?php if ($generator->db !== 'db'): ?>
