@@ -38,6 +38,7 @@ use yii\data\ActiveDataProvider;
 <?php endif; ?>
 use <?= ltrim($generator->baseControllerClass, '\\') ?>;
 use yii\web\NotFoundHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 
@@ -73,7 +74,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
      */
     public function actionIndex()
     {
-        //if(!Yii::$app->user->can('readYourAuth')) throw new HttpException(401, 'No Auth');
+        //if(!Yii::$app->user->can('viewYourAuth')) throw new ForbiddenHttpException(Yii::t('app', 'No Auth'));
 
 <?php if (!empty($generator->searchModelClass)): ?>
         $searchModel = new <?= isset($searchModelAlias) ? $searchModelAlias : $searchModelClass ?>();
@@ -103,7 +104,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
      */
     public function actionView(<?= $actionParams ?>)
     {
-        //if(!Yii::$app->user->can('readYourAuth')) throw new HttpException(401, 'No Auth');
+        //if(!Yii::$app->user->can('viewYourAuth')) throw new ForbiddenHttpException(Yii::t('app', 'No Auth'));
         
         return $this->render('view', [
             'model' => $this->findModel(<?= $actionParams ?>),
@@ -117,7 +118,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
      */
     public function actionCreate()
     {
-        //if(!Yii::$app->user->can('createYourAuth')) throw new HttpException(401, 'No Auth');
+        //if(!Yii::$app->user->can('createYourAuth')) throw new ForbiddenHttpException(Yii::t('app', 'No Auth'));
 
         $model = new <?= $modelClass ?>();
         $model->loadDefaultValues();
@@ -139,7 +140,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
      */
     public function actionUpdate(<?= $actionParams ?>)
     {
-        //if(!Yii::$app->user->can('updateYourAuth')) throw new HttpException(401, 'No Auth');
+        //if(!Yii::$app->user->can('updateYourAuth')) throw new ForbiddenHttpException(Yii::t('app', 'No Auth'));
 
         $model = $this->findModel(<?= $actionParams ?>);
 
@@ -160,7 +161,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
      */
     public function actionDelete(<?= $actionParams ?>)
     {
-        //if(!Yii::$app->user->can('deleteYourAuth')) throw new HttpException(401, 'No Auth');
+        //if(!Yii::$app->user->can('deleteYourAuth')) throw new ForbiddenHttpException(Yii::t('app', 'No Auth'));
 
         //$this->findModel(<?= $actionParams ?>)->delete();
         $model = $this->findModel(<?= $actionParams ?>);
