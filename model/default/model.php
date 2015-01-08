@@ -37,10 +37,6 @@ use yii\db\Expression;
  */
 class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . "\n" ?>
 {
-    const STATUS_INACTIVE = 0;
-    const STATUS_ACTIVE = 1;
-    const STATUS_DELETED = -1;
-    private $_statusLabel;
 
     /**
      * @inheritdoc
@@ -57,8 +53,8 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
     public function behaviors()
     {
         return [
-            'class' => TimestampBehavior::className(),
-            //'class' => BlameableBehavior::className(),
+            TimestampBehavior::className(),
+            // BlameableBehavior::className(),
         ];
     }
 <?php if ($generator->db !== 'db'): ?>
@@ -104,7 +100,7 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
 
     /**
      * Before save.
-     * create_time update_time
+     * 
      */
     /*public function beforeSave($insert)
     {
@@ -126,31 +122,5 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
         parent::afterSave($insert, $changedAttributes);
         // add your code here
     }*/
-
-    /**
-     * @inheritdoc
-     */
-    public static function getArrayStatus()
-    {
-        return [
-            self::STATUS_INACTIVE => Yii::t('app', 'STATUS_INACTIVE'),
-            self::STATUS_ACTIVE => Yii::t('app', 'STATUS_ACTIVE'),
-            self::STATUS_DELETED => Yii::t('app', 'STATUS_DELETED'),
-        ];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getStatusLabel()
-    {
-        if ($this->_statusLabel === null) 
-        {
-            $statuses = self::getArrayStatus();
-            $this->_statusLabel = $statuses[$this->status];
-        }
-        return $this->_statusLabel;
-    }
-
 
 }

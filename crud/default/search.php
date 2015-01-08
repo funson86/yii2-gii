@@ -65,13 +65,13 @@ class <?= $searchModelClass ?> extends <?= isset($modelAlias) ? $modelAlias : $m
     {
         $query = <?= isset($modelAlias) ? $modelAlias : $modelClass ?>::find();
         
-        $query->orderBy(['sort_order' => SORT_ASC, 'created_at' => SORT_DESC]);
+        $query->orderBy(['created_at' => SORT_DESC]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
 
-        if (!($this->load($params) && $this->validate())) {
+        if ($this->load($params) && !$this->validate()) {
             return $dataProvider;
         }
 
