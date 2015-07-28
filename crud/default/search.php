@@ -64,8 +64,10 @@ class <?= $searchModelClass ?> extends <?= isset($modelAlias) ? $modelAlias : $m
     public function search($params)
     {
         $query = <?= isset($modelAlias) ? $modelAlias : $modelClass ?>::find();
-        
-        $query->orderBy(['created_at' => SORT_DESC]);
+
+        if (!isset($params['sort'])) {
+            $query->orderBy(['created_at' => SORT_DESC]);
+        }
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
