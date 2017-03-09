@@ -12,6 +12,25 @@
 /* @var $rules string[] list of validation rules */
 /* @var $relations array list of relations (name => relation declaration) */
 
+$atList = ['created_at', 'updated_at'];
+$byList = ['created_by', 'updated_by'];
+$labelList = ['type', 'kind'];
+$isAt = $isBy = $isLabel = $isParent = false;
+foreach ($tableSchema->columns as $column) {
+    if (in_array($column->name, $atList)) {
+        $isAt = true;
+    }
+    if (in_array($column->name, $byList)) {
+        $isBy = true;
+    }
+    if (in_array($column->name, $labelList)) {
+        $isLabel = true;
+    }
+    if ($column->name == 'parent_id') {
+        $isParent = true;
+    }
+}
+
 echo "<?php\n";
 ?>
 
@@ -33,10 +52,24 @@ use yii\db\Expression;
 <?php foreach ($relations as $name => $relation): ?>
  * @property <?= $relation[1] . ($relation[2] ? '[]' : '') . ' $' . lcfirst($name) . "\n" ?>
 <?php endforeach; ?>
+<?php if ($isBy): ?>
+ * @property User $createdBy
+ * @property User $updatedBy
+<?php endif; ?>
 <?php endif; ?>
  */
 class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . "\n" ?>
 {
+<?php if ($isLabel): ?>
+<?php foreach($tableSchema->columns as $column): ?>
+<?php if (in_array($column->name, $labelList)): ?>
+    const <?= strtoupper($column->name) ?>_A = 1;
+    const <?= strtoupper($column->name) ?>_B = 0;
+    const <?= strtoupper($column->name) ?>_C = -1;
+
+<?php endif; ?>
+<?php endforeach; ?>
+<?php endif; ?>
 
     /**
      * @inheritdoc
@@ -53,8 +86,12 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
     public function behaviors()
     {
         return [
+<?php if ($isAt): ?>
             TimestampBehavior::className(),
-            // BlameableBehavior::className(),
+<?php endif; ?>
+<?php if ($isBy): ?>
+            BlameableBehavior::className(),
+<?php endif; ?>
         ];
     }
 <?php if ($generator->db !== 'db'): ?>
@@ -98,6 +135,55 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
     }
 <?php endforeach; ?>
 
+<?php if ($isParent): ?>
+    /**
+    * @return \yii\db\ActiveQuery
+    */
+    public function getParent()
+    {
+        return $this->hasOne(self::className(), ['id' => 'parent_id']);
+    }
+<?php endif; ?>
+
+<?php if ($isBy): ?>
+    /**
+    * @return \yii\db\ActiveQuery
+    */
+    public function getCreatedBy()
+    {
+        return $this->hasOne(User::className(), ['id' => 'created_by']);
+    }
+
+    /**
+    * @return \yii\db\ActiveQuery
+    */
+    public function getUpdatedBy()
+    {
+        return $this->hasOne(User::className(), ['id' => 'updated_by']);
+    }
+<?php endif; ?>
+
+<?php if ($isLabel): ?>
+<?php foreach($tableSchema->columns as $column): ?>
+<?php if (in_array($column->name, $labelList)): ?>
+    public static function getTypeLabels($id = null)
+    {
+        $data = [
+            self::<?= strtoupper($column->name) ?>_A => Yii::t('app', '<?= strtoupper($column->name) ?>_A'),
+            self::<?= strtoupper($column->name) ?>_B => Yii::t('app', '<?= strtoupper($column->name) ?>_B'),
+            self::<?= strtoupper($column->name) ?>_C => Yii::t('app', '<?= strtoupper($column->name) ?>_C'),
+        ];
+
+        if ($id !== null && isset($data[$id])) {
+            return $data[$id];
+        } else {
+            return $data;
+        }
+    }
+
+<?php endif; ?>
+<?php endforeach; ?>
+<?php endif; ?>
     /**
      * Before save.
      * 
