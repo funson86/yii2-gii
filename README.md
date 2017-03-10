@@ -138,4 +138,4 @@ if (!YII_ENV_TEST) {
         ],
 ```
 
-一些小技巧参考  [tips.html](tips)
+一些小技巧参考  [tips](tips.md)
