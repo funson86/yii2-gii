@@ -15,8 +15,6 @@ echo "<?php\n";
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 use <?= $generator->modelClass ?>;
-use common\models\Status;
-use common\models\YesNo;
 
 /* @var $this yii\web\View */
 /* @var $model <?= ltrim($generator->modelClass, '\\') ?> */
@@ -72,65 +70,25 @@ if (($tableSchema = $generator->getTableSchema()) === false) {
         if (strrchr($column->name, '_at') == '_at') {
             echo "            '" . $column->name . ":datetime',\n";
         } elseif (strrchr($column->name, '_by') == '_by') {
-            $modelName = $column->name;
-            $arrName = explode('_', $modelName);
-            $modelStr = $relation = '';
-            foreach ($arrName as $item) {
-                $modelStr .= ucfirst(strtolower($item));
-                if ($relation == '') {
-                    $relation = strtolower($item);
-                } else {
-                    $relation .= ucfirst(strtolower($item));
-                }
-            }
+            $modelStr = Inflector::camelize(Inflector::humanize($column->name));
+            $relation = Inflector::variablize(Inflector::humanize($column->name));
+
             echo "            [\n";
             echo "                'attribute' => '" . $column->name . "',\n";
             echo "                'value' => \$model->" . $relation . "->username,\n";
             echo "            ],\n";
         } elseif (strrchr($column->name, '_id') == '_id') {
-            $modelName = str_replace('_id', '', $column->name);
-            $arrName = explode('_', $modelName);
-            $modelStr = $relation = '';
-            foreach ($arrName as $item) {
-                $modelStr .= ucfirst(strtolower($item));
-                if ($relation == '') {
-                    $relation = strtolower($item);
-                } else {
-                    $relation .= ucfirst(strtolower($item));
-                }
-            }
+            $modelStr = Inflector::camelize(Inflector::humanize($column->name));
+            $relation = Inflector::variablize(Inflector::humanize($column->name));
+
             echo "            [\n";
             echo "                'attribute' => '" . $column->name . "',\n";
             echo "                'value' => \$model->" . $relation . " ? \$model->" . $relation . "->" . ($column->name == 'user_id' ? 'username' : 'name') . " : \$model->" . $column->name . ",\n";
             echo "            ],\n";
-        } elseif (strpos($column->name, 'status') !== false) {
-            $modelName = $column->name;
-            $arrName = explode('_', $modelName);
-            $modelStr = $relation = '';
-            foreach ($arrName as $item) {
-                $modelStr .= ucfirst(strtolower($item));
-                if ($relation == '') {
-                    $relation = strtolower($item);
-                } else {
-                    $relation .= ucfirst(strtolower($item));
-                }
-            }
-            echo "            [\n";
-            echo "                'attribute' => '" . $column->name ."',\n";
-            echo "                'value' => " . $modelStr ."::labels(\$model->" . $column->name ."),\n";
-            echo "            ],\n";
-        } elseif (in_array($column->name, $labelList)) {
-            $modelName = $column->name;
-            $arrName = explode('_', $modelName);
-            $modelStr = $relation = '';
-            foreach ($arrName as $item) {
-                $modelStr .= ucfirst(strtolower($item));
-                if ($relation == '') {
-                    $relation = strtolower($item);
-                } else {
-                    $relation .= ucfirst(strtolower($item));
-                }
-            }
+        } elseif (strpos($column->name, 'status') !== false || in_array($column->name, $labelList)) {
+            $modelStr = Inflector::camelize(Inflector::humanize($column->name));
+            $relation = Inflector::variablize(Inflector::humanize($column->name));
+
             echo "            [\n";
             echo "                'attribute' => '" . $column->name ."',\n";
             echo "                'value' => " . $generator->modelClass ."::get" . $modelStr . "Labels(\$model->" . $column->name ."),\n";

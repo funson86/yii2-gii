@@ -14,7 +14,7 @@
 
 $atList = ['created_at', 'updated_at'];
 $byList = ['created_by', 'updated_by'];
-$labelList = ['type', 'kind'];
+$labelList = ['type', 'kind', 'product_type'];
 $isAt = $isBy = $isLabel = $isParent = false;
 foreach ($tableSchema->columns as $column) {
     if (in_array($column->name, $atList)) {
@@ -58,7 +58,7 @@ use yii\db\Expression;
 <?php endif; ?>
 <?php endif; ?>
  */
-class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . "\n" ?>
+class <?= $className ?> extends BaseModel
 {
 <?php if ($isLabel): ?>
 <?php foreach($tableSchema->columns as $column): ?>
@@ -136,6 +136,7 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
 <?php endforeach; ?>
 
 <?php if ($isParent): ?>
+
     /**
     * @return \yii\db\ActiveQuery
     */
@@ -146,6 +147,7 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
 <?php endif; ?>
 
 <?php if ($isBy): ?>
+
     /**
     * @return \yii\db\ActiveQuery
     */
@@ -166,7 +168,14 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
 <?php if ($isLabel): ?>
 <?php foreach($tableSchema->columns as $column): ?>
 <?php if (in_array($column->name, $labelList)): ?>
-    public static function getTypeLabels($id = null)
+
+    /**
+     * return label or labels array
+     *
+     * @param  integer $id
+     * @return string or array
+    */
+    public static function get<?= \yii\helpers\Inflector::camelize($column->name) ?>Labels($id = null)
     {
         $data = [
             self::<?= strtoupper($column->name) ?>_A => Yii::t('app', '<?= strtoupper($column->name) ?>_A'),
@@ -180,10 +189,10 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
             return $data;
         }
     }
-
 <?php endif; ?>
 <?php endforeach; ?>
 <?php endif; ?>
+
     /**
      * Before save.
      * 
@@ -208,5 +217,4 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
         parent::afterSave($insert, $changedAttributes);
         // add your code here
     }*/
-
 }

@@ -45,49 +45,17 @@ use common\models\YesNo;
         if (strrchr($attribute, '_at') == '_at' || strrchr($attribute, '_by') == '_by') {
             continue;
         } elseif (strrchr($attribute, '_id') == '_id') {
-            $modelName = str_replace('_id', '', $attribute);
-            $arrName = explode('_', $modelName);
-            $modelStr = $relation = '';
-            foreach ($arrName as $item) {
-                $modelStr .= ucfirst(strtolower($item));
-                if ($relation == '') {
-                    $relation = strtolower($item);
-                } else {
-                    $relation .= ucfirst(strtolower($item));
-                }
-                if ($attribute == 'parent_id') {
-                    $modelStr = StringHelper::basename($generator->modelClass);
-                    $relation = 'parent';
-                }
+            $modelStr = Inflector::camelize(Inflector::humanize($attribute));
+            $relation = Inflector::variablize(Inflector::humanize($attribute));
+            if ($attribute == 'parent_id') {
+                $modelStr = StringHelper::basename($generator->modelClass);
+                $relation = 'parent';
             }
 
             echo "    <?= \$form->field(\$model, '" . $attribute . "')->dropDownList(ArrayHelper::map(\\common\\models\\" . $modelStr . "::find()->all(), 'id', '" . ($attribute == 'user_id' ? 'username' : 'name') . "'), ['prompt' => Yii::t('app', 'Please Select')]) ?>\n\n";
-        } elseif (strpos($attribute, 'status') !== false) {
-            $modelName = $attribute;
-            $arrName = explode('_', $modelName);
-            $modelStr = $relation = '';
-            foreach ($arrName as $item) {
-                $modelStr .= ucfirst(strtolower($item));
-                if ($relation == '') {
-                    $relation = strtolower($item);
-                } else {
-                    $relation .= ucfirst(strtolower($item));
-                }
-            }
-
-            echo "    <?= \$form->field(\$model, '" . $attribute . "')->dropDownList(" . $modelStr ."::labels(), ['prompt' => Yii::t('app', 'Please Select')]) ?>\n\n";
-        } elseif (in_array($attribute, $labelList)) {
-            $modelName = $attribute;
-            $arrName = explode('_', $modelName);
-            $modelStr = $relation = '';
-            foreach ($arrName as $item) {
-                $modelStr .= ucfirst(strtolower($item));
-                if ($relation == '') {
-                    $relation = strtolower($item);
-                } else {
-                    $relation .= ucfirst(strtolower($item));
-                }
-            }
+        } elseif (strpos($attribute, 'status') !== false || in_array($attribute, $labelList)) {
+            $modelStr = Inflector::camelize(Inflector::humanize($attribute));
+            $relation = Inflector::variablize(Inflector::humanize($attribute));
 
             echo "    <?= \$form->field(\$model, '" . $attribute . "')->dropDownList(" . $generator->modelClass ."::get" . $modelStr ."Labels(), ['prompt' => Yii::t('app', 'Please Select')]) ?>\n\n";
         } else {
