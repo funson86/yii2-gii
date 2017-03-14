@@ -124,6 +124,62 @@ class <?= $className ?> extends BaseModel
 <?php endforeach; ?>
         ];
     }
+
+    /**
+     * set import csv by sort. (name => type)
+     * type relation:xxx_id  enum:$labelList  text:string  int:integer
+     *
+     * @return array attribute type (name => type)
+     */
+    public static function getImportFields()
+    {
+        return [
+<?php foreach ($tableSchema->columns as $column) {
+    $name = $column->name;
+    $type = $column->phpType;
+    if ($name === 'id' || strrchr($name, '_at') == '_at' || strrchr($name, '_by')  == '_by') {
+        continue;
+    } elseif (in_array($name, $labelList)) {
+        echo "            '{$name}' => 'enum',\n";
+    } elseif (strrchr($name, '_id') == '_id') {
+        echo "            '{$name}' => 'relation',\n";
+    } elseif (in_array($type, ['integer', 'boolean'])) {
+        echo "            '{$name}' => 'int',\n";
+    } else {
+        echo "            '{$name}' => 'text',\n";
+    }
+}
+?>
+        ];
+    }
+
+    /**
+     * set export csv by sort. (name => type)
+     * type relation:xxx_id  enum:$labelList  text:string  int:integer
+     *
+     * @return array attribute type (name => type)
+     */
+    public static function getExportFields()
+    {
+        return [
+<?php foreach ($tableSchema->columns as $column) {
+    $name = $column->name;
+    $type = $column->phpType;
+    if (strrchr($name, '_at') == '_at' || strrchr($name, '_by')  == '_by') {
+        continue;
+    } elseif (in_array($name, $labelList)) {
+        echo "            '{$name}' => 'enum',\n";
+    } elseif (strrchr($name, '_id') == '_id') {
+        echo "            '{$name}' => 'relation',\n";
+    } elseif (in_array($type, ['integer', 'boolean'])) {
+        echo "            '{$name}' => 'int',\n";
+    } else {
+        echo "            '{$name}' => 'text',\n";
+    }
+}
+?>
+        ];
+    }
 <?php foreach ($relations as $name => $relation): ?>
 
     /**
@@ -134,7 +190,6 @@ class <?= $className ?> extends BaseModel
         <?= $relation[0] . "\n" ?>
     }
 <?php endforeach; ?>
-
 <?php if ($isParent): ?>
 
     /**
@@ -145,7 +200,6 @@ class <?= $className ?> extends BaseModel
         return $this->hasOne(self::className(), ['id' => 'parent_id']);
     }
 <?php endif; ?>
-
 <?php if ($isBy): ?>
 
     /**
@@ -164,7 +218,6 @@ class <?= $className ?> extends BaseModel
         return $this->hasOne(User::className(), ['id' => 'updated_by']);
     }
 <?php endif; ?>
-
 <?php if ($isLabel): ?>
 <?php foreach($tableSchema->columns as $column): ?>
 <?php if (in_array($column->name, $labelList)): ?>

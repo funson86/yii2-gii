@@ -36,17 +36,23 @@ use <?= ltrim($generator->searchModelClass, '\\') . (isset($searchModelAlias) ? 
 <?php else: ?>
 use yii\data\ActiveDataProvider;
 <?php endif; ?>
+use common\models\BaseModel;
 use <?= ltrim($generator->baseControllerClass, '\\') ?>;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Inflector;
 use yii\web\NotFoundHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
+use yii\web\UploadedFile;
 
 /**
  * <?= $controllerClass ?> implements the CRUD actions for <?= $modelClass ?> model.
  */
 class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->baseControllerClass) . "\n" ?>
 {
+    private $importPrimary = 'name';
+
     public function behaviors()
     {
         return [
@@ -107,7 +113,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
         /*if (!Yii::$app->user->can('viewYourAuth')) {
             throw new ForbiddenHttpException(Yii::t('app', 'No Auth'));
         }*/
-        
+
         return $this->render('view', [
             'model' => $this->findModel(<?= $actionParams ?>),
         ]);
@@ -204,5 +210,196 @@ if (count($pks) === 1) {
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
+    }
+
+    /**
+     * batch import product
+     * @return mixed
+     */
+    public function actionImport()
+    {
+        //if(!Yii::$app->user->can('viewYourAuth')) throw new ForbiddenHttpException(Yii::t('app', 'No Auth'));
+        $model = new <?= $modelClass ?>();
+        $model->loadDefaultValues();
+
+        if (Yii::$app->request->isPost) {
+            $countCreate = $countUpdate = 0;
+
+            $file = UploadedFile::getInstanceByName('importFile');
+            if (empty($file)) {
+                Yii::$app->getSession()->setFlash('danger', Yii::t('app', 'No Files, please check file.'));
+                return $this->render('import', [
+                    'model' => $model,
+                ]);
+            }
+            $handle = fopen($file->tempName, 'r');
+            $result = BaseModel::inputCsv($handle);
+
+            $arrData = [];
+            if (count($result) <= 1) {
+                Yii::$app->getSession()->setFlash('danger', Yii::t('app', 'No Record, please check file.'));
+            } else {
+                $line = 2;
+                $errorLines = [];
+                $existsName = [];
+
+                for ($i = 1; $i < count($result); $i++) {
+                    if (false/*empty($result[$i][0]) || empty($result[$i][1])*/) {
+                        array_push($errorLines, $line);
+                        continue;
+                    }
+                    $line++;
+
+                    array_push($arrData, $result[$i]);
+                }
+
+                $relationNameId = '';
+                $importFields = <?= $modelClass ?>::getImportFields();
+                foreach ($importFields as $field => $fieldType) {
+                    if ($fieldType == 'relation' && $field == 'parent_id') {
+                        $modelName = "\\common\\models\\<?= $modelClass ?>";
+                        $relationNameId[$field] = ArrayHelper::map($modelName::find()->all(), 'name', 'id');
+                    } elseif ($fieldType == 'relation') {
+                        $modelName = "\\common\\models\\" . Inflector::camelize(Inflector::humanize($field));
+                        $name = in_array($field, ['user_id', 'created_by', 'updated_by']) ? 'username' : 'name';
+                        $relationNameId[$field] = ArrayHelper::map($modelName::find()->all(), $name, 'id');
+                    }
+                }
+
+                foreach ($arrData as $item) {
+                    $i = 0;
+                    $fields = [];
+                    foreach ($importFields as $field => $fieldType) {
+                        if ($fieldType == 'text') {
+                            $fields[$field] = mb_convert_encoding(trim($item[$i]), 'utf-8', 'gb2312,gbk');
+                        } elseif ($fieldType == 'enum') {
+                            $func = 'get' . Inflector::camelize($field) . 'Labels';
+                            $arrayLabelsId = array_flip(call_user_func(["\\common\\models\\<?= $modelClass ?>", $func]));
+                            $raw = mb_convert_encoding(trim($item[$i]), 'utf-8', 'gb2312,gbk');
+                            $fields[$field] = isset($arrayLabelsId[$raw]) ? $arrayLabelsId[$raw] : 0;
+                        } elseif ($fieldType == 'relation') {
+                            $raw = mb_convert_encoding(trim($item[$i]), 'utf-8', 'gb2312,gbk');
+                            $fields[$field] = isset($relationNameId[$field][$raw]) ? $relationNameId[$field][$raw] : 0;
+                        } elseif ($fieldType == 'int') {
+                            $fields[$field] = intval(trim($item[$i]));
+                        } elseif ($fieldType == 'decimal') {
+                            $fields[$field] = floatval(trim($item[$i]));
+                        }
+
+                        $i++;
+                    }
+                    //查看是否存在,如果存在不导入
+                    $count = <?= $modelClass ?>::find()->where([$this->importPrimary => $fields[$this->importPrimary]])->count();
+                    if ($count > 0) {
+                        $model = <?= $modelClass ?>::find()->where([$this->importPrimary => $fields[$this->importPrimary]])->one();
+                        $model->attributes = $fields;
+                        $result = $model->save();
+                        if (!$result) { //如果保存失败
+                            array_push($errorLines, $line);
+                            $line++;
+                            continue;
+                        }
+                        array_push($existsName, $fields['name']);
+                        $countUpdate++;
+                        continue;
+                    }
+
+                    $model->attributes = $fields;
+                    $result = $model->save();
+                    if (!$result) { //如果保存失败
+                        array_push($errorLines, $line);
+                        $line++;
+                        continue;
+                    }
+                    $countCreate++;
+
+                    $line++;
+                }
+
+                if (count($existsName)) {
+                    $existsName = implode(',', $existsName);
+                    Yii::$app->getSession()->setFlash('danger', Yii::t('app', 'Record ' . $existsName . ' Updated.'));
+                }
+                if (count($errorLines)) {
+                    $strLine = implode(', ', $errorLines);
+                    Yii::$app->getSession()->setFlash('danger', Yii::t('app', "Line {strLine} error.", ['strLine' => $strLine]));
+                }
+                Yii::$app->getSession()->setFlash('success', Yii::t('app', "Import Data Success. Create: {countCreate}  Update: {countUpdate}", ['countCreate' => $countCreate, 'countUpdate' => $countUpdate]));
+            }
+        }
+
+        return $this->render('import', [
+            'model' => $model,
+        ]);
+    }
+
+
+    /**
+     * batch import product
+     * @return mixed
+     */
+    public function actionExport()
+    {
+        $str = '';
+        $model = new <?= $modelClass ?>();
+
+        $relationIdName = [];
+        $exportFields = <?= $modelClass ?>::getExportFields();
+        foreach ($exportFields as $field => $fieldType) {
+            if ($str == '') {
+                $str .= '"' . mb_convert_encoding($model->attributeLabels()[$field], 'gbk', 'utf-8') . '"';
+            } else {
+                $str .= ',"' . mb_convert_encoding($model->attributeLabels()[$field], 'gbk', 'utf-8') . '"';
+            }
+
+            if ($fieldType == 'relation' && $field == 'parent_id') {
+                $modelName = "\\common\\models\\<?= $modelClass ?>";
+                $relationIdName[$field] = ArrayHelper::map($modelName::find()->all(), 'id', 'name');
+            } elseif ($fieldType == 'relation') {
+                $modelName = "\\common\\models\\" . Inflector::camelize(Inflector::humanize($field));
+                $name = in_array($field, ['user_id', 'created_by', 'updated_by']) ? 'username' : 'name';
+                $relationIdName[$field] = ArrayHelper::map($modelName::find()->all(), 'id', $name);
+            }
+        }
+        $str .= "\n";
+
+        $models = <?= $modelClass ?>::find()->orderBy(['id' => SORT_ASC])->all();
+        foreach ($models as $model) {
+            $line = '';
+            foreach ($exportFields as $field => $fieldType) {
+                $value = '';
+                if ($fieldType == 'text') {
+                    $value = mb_convert_encoding($model->$field, 'gbk', 'utf-8');
+                } elseif ($fieldType == 'enum') {
+                    $func = 'get' . Inflector::camelize($field) . 'Labels';
+                    $arrayIdLabels = call_user_func(["\\common\\models\\<?= $modelClass ?>", $func]);
+                    $value = mb_convert_encoding($arrayIdLabels[$model->$field], 'gbk', 'utf-8');
+                } elseif ($fieldType == 'relation') {
+                    $value = isset($relationIdName[$field][$model->$field]) ? $relationIdName[$field][$model->$field] : '';
+                    $value = mb_convert_encoding($value, 'gbk', 'utf-8');
+                } elseif ($fieldType == 'int') {
+                    $value = intval(trim($model->$field));
+                } elseif ($fieldType == 'decimal') {
+                    $value = floatval(trim($model->$field));
+                }
+
+                if ($line == '') {
+                    $line .= '"' . $value . '"';
+                } else {
+                    $line .= ',"' . str_replace("\"", "\"\"", $value) . '"';
+                }
+            }
+            $str .= $line;
+            $str .= "\n";
+        }
+
+        $filename = date('YmdHi') . '.csv';
+
+        header("Content-type:text/csv");
+        header("Content-Disposition:attachment;filename=" . $filename);
+        header('Cache-Control:must-revalidate,post-check=0,pre-check=0');
+        header('Expires:0');
+        header('Pragma:public');
+        echo $str;
     }
 }

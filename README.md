@@ -11,6 +11,7 @@ Yii2-gii for Chinese
 1. 在model.php头部增加$labelList = ['type', 'kind']; 如果其他需要生成getXXXLabels函数会自动生成，适用于需要定义常量的字段。
 2. 增加beforeSave和afterSave两个函数，默认为注释掉的
 3. 增加model保存时自动附加时间和操作用户TimestampBehavior::className(),BlameableBehavior::className(),
+4. 增加getImportFields和getExportFields两个函数，用于指定导入导出csv对应的类型，类型暂时支持relation/enum/int/text。‘_id’默认为relation类型，自动转换为该类型的name；enum对应$labelList中所指定，自动对应getXxxLabels中标签；int对应字段类型为integer或boolean；其他为text类型。
 
 ### CRUD
 
@@ -18,6 +19,8 @@ Yii2-gii for Chinese
 1. 针对鉴权提供can函数
 2. 对actionDelete增加软删除，即将状态设置为STATUS_DELETE状态
 3. search.php增加排序，默认按照create_at降序，可启用按照sort_order升序, create_at降序
+4. 增加import和export函数，对应controller-id/import和controller-id/export路由
+5. 导入的模板需要放在backend/web/template/table.csv文件
 
 #### Views
 1. 在index.php _form.php view.php文件的头部有$labelList = ['type', 'kind']; 在index中会使用标签以及生成下拉列表筛选， 表单中增加下拉列表  view中会转换成对应的标签

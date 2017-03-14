@@ -33,6 +33,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p>
         <?= "<?= " ?>Html::a(<?= $generator->generateString('Create ') ?> . <?= $generator->generateString(Inflector::camel2words(StringHelper::basename($generator->modelClass))) ?>, ['create'], ['class' => 'btn btn-success']) ?>
+        <?= "<?= " ?>Html::a(<?= $generator->generateString('Import ') ?> . <?= $generator->generateString(Inflector::camel2words(StringHelper::basename($generator->modelClass))) ?>, ['import'], ['class' => 'btn btn-success']) ?>
+        <?= "<?= " ?>Html::a(Yii::t('app', 'Download Template'), '/template/<?= Inflector::camel2id(StringHelper::basename($generator->modelClass)) ?>.csv', ['class' => 'btn btn-primary', 'target' => '_blank']) ?>
+        <?= "<?= " ?>Html::a(<?= $generator->generateString('Export ') ?> . <?= $generator->generateString(Inflector::camel2words(StringHelper::basename($generator->modelClass))) ?>, ['export'], ['class' => 'btn btn-success', 'target' => '_blank']) ?>
     </p>
 
 <?php if ($generator->indexWidgetType === 'grid'): ?>

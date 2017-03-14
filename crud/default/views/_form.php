@@ -22,8 +22,6 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use <?= $generator->modelClass ?>;
 use yii\helpers\ArrayHelper;
-use common\models\Status;
-use common\models\YesNo;
 
 /* @var $this yii\web\View */
 /* @var $model <?= ltrim($generator->modelClass, '\\') ?> */
