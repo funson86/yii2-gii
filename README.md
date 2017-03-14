@@ -19,7 +19,7 @@ Yii2-gii for Chinese
 1. 针对鉴权提供can函数
 2. 对actionDelete增加软删除，即将状态设置为STATUS_DELETE状态
 3. search.php增加排序，默认按照create_at降序，可启用按照sort_order升序, create_at降序
-4. 增加import和export函数，对应controller-id/import和controller-id/export路由
+4. 增加import和export函数，对应controller-id/import和controller-id/export路由，如果需要对导入文件做严格的检查，修改if (false/*empty($result[$i][0]) || empty($result[$i][1])*/) { 部分代码。
 5. 导入的模板需要放在backend/web/template/table.csv文件
 
 #### Views
