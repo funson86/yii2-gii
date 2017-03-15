@@ -12,6 +12,7 @@ Yii2-gii for Chinese
 2. 增加beforeSave和afterSave两个函数，默认为注释掉的
 3. 增加model保存时自动附加时间和操作用户TimestampBehavior::className(),BlameableBehavior::className(),
 4. 增加getImportFields和getExportFields两个函数，用于指定导入导出csv对应的类型，类型暂时支持relation/enum/int/text。‘_id’默认为relation类型，自动转换为该类型的name；enum对应$labelList中所指定，自动对应getXxxLabels中标签；int对应字段类型为integer或boolean；其他为text类型。
+5. 在controller.php头部增加$importPrimary，用来判定导入时候为新增数据还是更新数据，支持通过数组方式指定类型，类型和上述一致enum/relation/text/int/decimal。
 
 ### CRUD
 

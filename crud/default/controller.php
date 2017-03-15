@@ -51,7 +51,7 @@ use yii\web\UploadedFile;
  */
 class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->baseControllerClass) . "\n" ?>
 {
-    private $importPrimary = 'name';
+    private $importPrimary = 'name'; //['product_id' => 'relation', 'name' => 'text'];
 
     public function behaviors()
     {
@@ -288,10 +288,19 @@ if (count($pks) === 1) {
 
                         $i++;
                     }
+
                     //查看是否存在,如果存在不导入
-                    $count = <?= $modelClass ?>::find()->where([$this->importPrimary => $fields[$this->importPrimary]])->count();
+                    $condition = [];
+                    if (is_array($this->importPrimary)) {
+                        foreach ($this->importPrimary as $field => $fieldType) {
+                            $condition[$field] = $fields[$field];
+                        }
+                    } else {
+                        $condition[$this->importPrimary] = $fields[$this->importPrimary];
+                    }
+                    $count = <?= $modelClass ?>::find()->where($condition)->count();
                     if ($count > 0) {
-                        $model = <?= $modelClass ?>::find()->where([$this->importPrimary => $fields[$this->importPrimary]])->one();
+                        $model = <?= $modelClass ?>::find()->where($condition)->one();
                         $model->attributes = $fields;
                         $result = $model->save();
                         if (!$result) { //如果保存失败
@@ -304,6 +313,7 @@ if (count($pks) === 1) {
                         continue;
                     }
 
+                    $model = new <?= $modelClass ?>();
                     $model->attributes = $fields;
                     $result = $model->save();
                     if (!$result) { //如果保存失败
