@@ -97,7 +97,19 @@ if (($tableSchema = $generator->getTableSchema()) === false) {
             echo "                'attribute' => '" . $column->name ."',\n";
             echo "                'format' => 'html',\n";
             echo "                'value' => function (\$model) {\n";
-            echo "                       return " . $generator->modelClass ."::get" . $modelStr ."Labels(\$model->" . $column->name .");\n";
+            if (strpos($column->name, 'status') !== false) {
+                echo "                    if (\$model->" . $column->name ." === " . $generator->modelClass . "::" . strtoupper($column->name) ."_ACTIVE) {\n";
+                echo "                        \$class = 'label-success';\n";
+                echo "                    } elseif (\$model->" . $column->name ." === " . $generator->modelClass . "::" . strtoupper($column->name) ."_INACTIVE) {\n";
+                echo "                        \$class = 'label-warning';\n";
+                echo "                    } else {\n";
+                echo "                        \$class = 'label-danger';\n";
+                echo "                    }\n";
+                echo "\n";
+                echo "                    return '<span class=\"label ' . \$class . '\">' . " . $generator->modelClass . "::get" . $modelStr . "Labels(\$model->" . $column->name . ") . '</span>';\n";
+            } else {
+                echo "                     return " . $generator->modelClass . "::get" . $modelStr . "Labels(\$model->" . $column->name . ");\n";
+            }
             echo "                },\n";
             echo "\n";
             echo "                'filter' => Html::activeDropDownList(\n";
