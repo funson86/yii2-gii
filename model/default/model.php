@@ -60,16 +60,14 @@ use yii\db\Expression;
  */
 class <?= $className ?> extends BaseModel
 {
-<?php if ($isLabel): ?>
 <?php foreach($tableSchema->columns as $column): ?>
-<?php if (in_array($column->name, $labelList)): ?>
+<?php if (strpos($column->name, 'status') !== false || in_array($column->name, $labelList)): ?>
     const <?= strtoupper($column->name) ?>_A = 1;
     const <?= strtoupper($column->name) ?>_B = 0;
     const <?= strtoupper($column->name) ?>_C = -1;
 
 <?php endif; ?>
 <?php endforeach; ?>
-<?php endif; ?>
 
     /**
      * @inheritdoc
@@ -203,31 +201,30 @@ class <?= $className ?> extends BaseModel
 <?php if ($isBy): ?>
 
     /**
-    * @return \yii\db\ActiveQuery
-    */
+     * @return \yii\db\ActiveQuery
+     */
     public function getCreatedBy()
     {
         return $this->hasOne(User::className(), ['id' => 'created_by']);
     }
 
     /**
-    * @return \yii\db\ActiveQuery
-    */
+     * @return \yii\db\ActiveQuery
+     */
     public function getUpdatedBy()
     {
         return $this->hasOne(User::className(), ['id' => 'updated_by']);
     }
 <?php endif; ?>
-<?php if ($isLabel): ?>
 <?php foreach($tableSchema->columns as $column): ?>
-<?php if (in_array($column->name, $labelList)): ?>
+<?php if (strpos($column->name, 'status') !== false  || in_array($column->name, $labelList)): ?>
 
     /**
      * return label or labels array
      *
      * @param  integer $id
      * @return string or array
-    */
+     */
     public static function get<?= \yii\helpers\Inflector::camelize($column->name) ?>Labels($id = null)
     {
         $data = [
@@ -244,7 +241,6 @@ class <?= $className ?> extends BaseModel
     }
 <?php endif; ?>
 <?php endforeach; ?>
-<?php endif; ?>
 
     /**
      * Before save.
