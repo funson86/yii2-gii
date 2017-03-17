@@ -61,14 +61,13 @@ use yii\db\Expression;
 class <?= $className ?> extends BaseModel
 {
 <?php foreach($tableSchema->columns as $column): ?>
-<?php if (strpos($column->name, 'status') !== false || in_array($column->name, $labelList)): ?>
+<?php if (strpos($column->name, 'status') > 0 || in_array($column->name, $labelList)): ?>
     const <?= strtoupper($column->name) ?>_A = 1;
     const <?= strtoupper($column->name) ?>_B = 0;
     const <?= strtoupper($column->name) ?>_C = -1;
 
 <?php endif; ?>
 <?php endforeach; ?>
-
     /**
      * @inheritdoc
      */
@@ -217,7 +216,7 @@ class <?= $className ?> extends BaseModel
     }
 <?php endif; ?>
 <?php foreach($tableSchema->columns as $column): ?>
-<?php if (strpos($column->name, 'status') !== false  || in_array($column->name, $labelList)): ?>
+<?php if (strpos($column->name, 'status') > 0 || in_array($column->name, $labelList)): ?>
 
     /**
      * return label or labels array
