@@ -33,7 +33,6 @@ foreach ($tableSchema->columns as $column) {
 
 echo "<?php\n";
 ?>
-
 namespace <?= $generator->ns ?>;
 
 use Yii;
