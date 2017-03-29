@@ -179,7 +179,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 
         $this->findModel(<?= $actionParams ?>)->delete();
         /*$model = $this->findModel(<?= $actionParams ?>);
-        $model->status = Status::STATUS_DELETED;
+        $model->status = <?= $modelClass ?>::STATUS_DELETED;
         $model->save();*/
 
         return $this->redirect(['index']);

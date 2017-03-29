@@ -40,7 +40,7 @@ use yii\helpers\ArrayHelper;
 
 <?php foreach ($generator->getColumnNames() as $attribute) {
     if (in_array($attribute, $safeAttributes)) {
-        if (strrchr($attribute, '_at') == '_at' || strrchr($attribute, '_by') == '_by') {
+        if ($attribute == 'id' || strrchr($attribute, '_at') == '_at' || strrchr($attribute, '_by') == '_by') {
             continue;
         } elseif (strrchr($attribute, '_id') == '_id') {
             $modelStr = Inflector::camelize(Inflector::humanize($attribute));
