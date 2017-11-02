@@ -66,7 +66,7 @@ if (($tableSchema = $generator->getTableSchema()) === false) {
             echo "            [\n";
             echo "                'attribute' => '" . $column->name . "',\n";
             echo "                'value' => function (\$model) {\n";
-            echo "                    return \$model->" . $relation . " ? \$model->" . $relation . "->username : '-';\n";
+            echo "                    return isset(\$model->" . $relation . ") ? \$model->" . $relation . "->username : '-';\n";
             echo "                },\n";
             echo "            ],\n";
         } elseif (strrchr($column->name, '_id') == '_id') {
@@ -80,7 +80,7 @@ if (($tableSchema = $generator->getTableSchema()) === false) {
             echo "            [\n";
             echo "                'attribute' => '" . $column->name ."',\n";
             echo "                'value' => function (\$model) {\n";
-            echo "                    return \$model->" . $relation ." ? \$model->" . $relation ."->" . ($column->name == 'user_id' ? 'username' : 'name') . " : \$model->" . $column->name .";\n";
+            echo "                    return isset(\$model->" . $relation .") ? \$model->" . $relation ."->" . ($column->name == 'user_id' ? 'username' : 'name') . " : \$model->" . $column->name .";\n";
             echo "                },\n";
             echo "                'filter' => Html::activeDropDownList(\n";
             echo "                    \$searchModel,\n";

@@ -83,7 +83,7 @@ if (($tableSchema = $generator->getTableSchema()) === false) {
 
             echo "            [\n";
             echo "                'attribute' => '" . $column->name . "',\n";
-            echo "                'value' => \$model->" . $relation . " ? \$model->" . $relation . "->" . ($column->name == 'user_id' ? 'username' : 'name') . " : \$model->" . $column->name . ",\n";
+            echo "                'value' => isset(\$model->" . $relation . ") ? \$model->" . $relation . "->" . ($column->name == 'user_id' ? 'username' : 'name') . " : \$model->" . $column->name . ",\n";
             echo "            ],\n";
         } elseif (strpos($column->name, 'status') !== false || in_array($column->name, $labelList)) {
             $modelStr = Inflector::camelize(Inflector::humanize($column->name));
