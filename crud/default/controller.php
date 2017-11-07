@@ -213,7 +213,7 @@ if (count($pks) === 1) {
     }
 
     /**
-     * batch import product
+     * batch import by csv file
      * @return mixed
      */
     public function actionImport()
@@ -345,7 +345,7 @@ if (count($pks) === 1) {
 
 
     /**
-     * batch import product
+     * batch export to csv file
      * @return mixed
      */
     public function actionExport()
