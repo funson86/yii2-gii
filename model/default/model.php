@@ -14,7 +14,7 @@
 
 $atList = ['created_at', 'updated_at'];
 $byList = ['created_by', 'updated_by'];
-$labelList = ['type', 'kind', 'product_type'];
+$labelList = ['type', 'status', 'kind', 'product_type'];
 $isAt = $isBy = $isLabel = $isParent = false;
 foreach ($tableSchema->columns as $column) {
     if (in_array($column->name, $atList)) {
