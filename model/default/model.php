@@ -162,8 +162,10 @@ class <?= $className ?> extends BaseModel
 <?php foreach ($tableSchema->columns as $column) {
     $name = $column->name;
     $type = $column->phpType;
-    if (strrchr($name, '_at') == '_at' || strrchr($name, '_by')  == '_by') {
-        continue;
+    if (strrchr($name, '_at') == '_at') {
+        echo "            '{$name}' => 'datetime',\n";
+    } elseif (strrchr($name, '_by')  == '_by') {
+        echo "            '{$name}' => 'relation',\n";
     } elseif (in_array($name, $labelList)) {
         echo "            '{$name}' => 'enum',\n";
     } elseif (strrchr($name, '_id') == '_id') {

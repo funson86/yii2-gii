@@ -366,7 +366,7 @@ if (count($pks) === 1) {
                 $modelName = "\\common\\models\\<?= $modelClass ?>";
                 $relationIdName[$field] = ArrayHelper::map($modelName::find()->all(), 'id', 'name');
             } elseif ($fieldType == 'relation') {
-                $modelName = "\\common\\models\\" . Inflector::camelize(Inflector::humanize($field));
+                $modelName = in_array($field, ['created_by', 'updated_by']) ? "\\common\\models\\User" : "\\common\\models\\" . Inflector::camelize(Inflector::humanize($field));
                 $name = in_array($field, ['user_id', 'created_by', 'updated_by']) ? 'username' : 'name';
                 $relationIdName[$field] = ArrayHelper::map($modelName::find()->all(), 'id', $name);
             }
@@ -391,6 +391,10 @@ if (count($pks) === 1) {
                     $value = intval(trim($model->$field));
                 } elseif ($fieldType == 'decimal') {
                     $value = floatval(trim($model->$field));
+                } elseif ($fieldType == 'datetime') {
+                    $value = isset($model->$field) ? Yii::$app->formatter->asDatetime($model->$field) : '';
+                } else {
+                    $value = $model->$field;
                 }
 
                 if ($line == '') {
