@@ -289,7 +289,7 @@ if (count($pks) === 1) {
                         $i++;
                     }
 
-                    //²é¿´ÊÇ·ñ´æÔÚ,Èç¹û´æÔÚ²»µ¼Èë
+                    //æŸ¥çœ‹æ˜¯å¦å­˜åœ¨,å¦‚æœå­˜åœ¨ä¸å¯¼å…¥
                     $condition = [];
                     if (is_array($this->importPrimary)) {
                         foreach ($this->importPrimary as $field => $fieldType) {
@@ -303,7 +303,7 @@ if (count($pks) === 1) {
                         $model = <?= $modelClass ?>::find()->where($condition)->one();
                         $model->attributes = $fields;
                         $result = $model->save();
-                        if (!$result) { //Èç¹û±£´æÊ§°Ü
+                        if (!$result) { //å¦‚æœä¿å­˜å¤±è´¥
                             array_push($errorLines, $line);
                             $line++;
                             continue;
@@ -316,7 +316,7 @@ if (count($pks) === 1) {
                     $model = new <?= $modelClass ?>();
                     $model->attributes = $fields;
                     $result = $model->save();
-                    if (!$result) { //Èç¹û±£´æÊ§°Ü
+                    if (!$result) { //å¦‚æœä¿å­˜å¤±è´¥
                         array_push($errorLines, $line);
                         $line++;
                         continue;
