@@ -249,7 +249,7 @@ class <?= $className ?> extends BaseModel
      */
     /*public function beforeSave($insert)
     {
-        if(parent::beforeSave($insert))
+        if (parent::beforeSave($insert))
         {
             // add your code here
             return true;
